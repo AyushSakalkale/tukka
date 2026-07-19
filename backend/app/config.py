@@ -27,18 +27,30 @@ def is_valid_cookies_file(path: Path) -> bool:
     except Exception:
         return False
 
-# Checked in order: Env var path, backend directory, app directory
+# Checked in order of preference
 cookies_env = os.getenv("COOKIES_FILE")
 raw_cookies_file = None
 
-if cookies_env and Path(cookies_env).exists():
-    raw_cookies_file = Path(cookies_env)
-elif (BASE_DIR / "cookies.txt").exists():
-    raw_cookies_file = BASE_DIR / "cookies.txt"
-elif Path("/app/cookies.txt").exists():
-    raw_cookies_file = Path("/app/cookies.txt")
+possible_paths = []
+if cookies_env:
+    possible_paths.append(Path(cookies_env))
 
-if raw_cookies_file and is_valid_cookies_file(raw_cookies_file):
+# Add workspace root, backend, and app container paths for both file names
+possible_paths.extend([
+    BASE_DIR.parent / "cookies.txt",
+    BASE_DIR.parent / "www.youtube.com_cookies.txt",
+    BASE_DIR / "cookies.txt",
+    BASE_DIR / "www.youtube.com_cookies.txt",
+    Path("/app/cookies.txt"),
+    Path("/app/www.youtube.com_cookies.txt")
+])
+
+for path in possible_paths:
+    if path.exists() and is_valid_cookies_file(path):
+        raw_cookies_file = path
+        break
+
+if raw_cookies_file:
     COOKIES_FILE = raw_cookies_file
     logger = logging.getLogger("yt_downloader")
     logger.info(f"Loaded valid Netscape cookies from: {COOKIES_FILE}")

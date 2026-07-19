@@ -12,8 +12,8 @@ services:
       - CLEANUP_INTERVAL_SECONDS=600
     volumes:
       # Optional cookies mount to support downloading age-restricted videos.
-      # If cookies.txt doesn't exist, docker creates a directory, but you can replace it.
       - ./cookies.txt:/app/cookies.txt:ro
+      - ./www.youtube.com_cookies.txt:/app/www.youtube.com_cookies.txt:ro
     restart: unless-stopped
 
   nginx:

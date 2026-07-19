@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# OS Files
+.DS_Store
+
+# YouTube Cookies (CRITICAL SECURITY EXCLUSION)
+cookies.txt
+www.youtube.com_cookies.txt
