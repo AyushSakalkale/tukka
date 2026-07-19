@@ -52,8 +52,8 @@ for path in possible_paths:
 
 if raw_cookies_file:
     COOKIES_FILE = raw_cookies_file
-    logger = logging.getLogger("yt_downloader")
-    logger.info(f"Loaded valid Netscape cookies from: {COOKIES_FILE}")
+    # Use print for early startup logs so it displays before logging config initializes
+    print(f"Loaded valid Netscape cookies from: {COOKIES_FILE}", flush=True)
 else:
     COOKIES_FILE = None
 
