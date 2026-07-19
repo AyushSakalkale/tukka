@@ -1,21 +1,23 @@
 // Resolve API Base URL depending on development vs production Docker setup
 const getApiBaseUrl = () => {
-    // If a custom API base is set in localStorage (e.g., for split Render static + web service deploy)
+    // If a custom API base is set in localStorage (e.g., override configuration)
     const customBase = localStorage.getItem('API_BASE_URL');
     if (customBase) {
         return customBase;
     }
     
-    // If frontend is opened directly from file system or a separate dev server,
-    // route API calls to the local FastAPI port 8000.
-    if (window.location.hostname === 'localhost' && 
-        window.location.port !== '8080' && 
-        window.location.port !== '80' && 
-        window.location.port !== '') {
+    // If running locally on your Mac
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        if (window.location.port === '8080' || window.location.port === '80' || window.location.port === '') {
+            // Local Docker Compose / Nginx reverse proxy
+            return '';
+        }
+        // Local direct FastAPI backend running on port 8000
         return 'http://localhost:8000';
     }
-    // In production/Docker Compose, Nginx serves everything on the same port, so relative paths work.
-    return '';
+
+    // Default production backend hosted on Render
+    return 'https://tukka.onrender.com';
 };
 
 const API_BASE = getApiBaseUrl();
