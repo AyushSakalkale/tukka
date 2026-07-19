@@ -136,6 +136,47 @@ def health_check():
         "yt_dlp_version": yt_dlp.version.__version__
     }
 
+@app.get("/api/cookies-debug")
+def cookies_debug():
+    """Diagnostic endpoint to inspect cookies files in the container."""
+    import os
+    from app.config import COOKIES_FILE
+    
+    files_in_app = os.listdir("/app") if os.path.exists("/app") else []
+    
+    cookie_file_status = {}
+    cookie_paths = [
+        "/app/cookies.txt", 
+        "/app/www.youtube.com_cookies.txt", 
+        "./cookies.txt", 
+        "./www.youtube.com_cookies.txt"
+    ]
+    for cp in cookie_paths:
+        p = Path(cp)
+        exists = p.exists()
+        is_file = p.is_file() if exists else False
+        size = p.stat().st_size if exists else 0
+        first_line = ""
+        if exists and is_file:
+            try:
+                with open(p, 'r', encoding='utf-8', errors='ignore') as f:
+                    first_line = f.readline()
+            except Exception as e:
+                first_line = f"Error: {e}"
+        cookie_file_status[cp] = {
+            "exists": exists,
+            "is_file": is_file,
+            "size": size,
+            "first_line": first_line
+        }
+        
+    return {
+        "configured_cookies_file": str(COOKIES_FILE) if COOKIES_FILE else None,
+        "files_in_app": files_in_app,
+        "cookie_file_status": cookie_file_status,
+        "env_cookies_file": os.getenv("COOKIES_FILE")
+    }
+
 @app.post("/api/info", response_model=schemas.InfoResponse)
 @limiter.limit(RATE_LIMIT_INFO)
 def get_info(request: Request, body: schemas.InfoRequest):
