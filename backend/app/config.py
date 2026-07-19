@@ -31,24 +31,39 @@ def is_valid_cookies_file(path: Path) -> bool:
 cookies_env = os.getenv("COOKIES_FILE")
 raw_cookies_file = None
 
-possible_paths = []
-if cookies_env:
-    possible_paths.append(Path(cookies_env))
+# Check if cookies are passed as an environment variable (for Render Docker compatibility)
+youtube_cookies_env = os.getenv("YOUTUBE_COOKIES")
+if youtube_cookies_env:
+    try:
+        temp_cookies_path = Path("/tmp/env_cookies.txt")
+        temp_cookies_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(temp_cookies_path, "w", encoding="utf-8") as f:
+            f.write(youtube_cookies_env)
+        
+        if is_valid_cookies_file(temp_cookies_path):
+            raw_cookies_file = temp_cookies_path
+    except Exception as e:
+        print(f"Error loading YOUTUBE_COOKIES from env var: {e}", flush=True)
 
-# Add workspace root, backend, and app container paths for both file names
-possible_paths.extend([
-    BASE_DIR.parent / "cookies.txt",
-    BASE_DIR.parent / "www.youtube.com_cookies.txt",
-    BASE_DIR / "cookies.txt",
-    BASE_DIR / "www.youtube.com_cookies.txt",
-    Path("/app/cookies.txt"),
-    Path("/app/www.youtube.com_cookies.txt")
-])
+if not raw_cookies_file:
+    possible_paths = []
+    if cookies_env:
+        possible_paths.append(Path(cookies_env))
 
-for path in possible_paths:
-    if path.exists() and is_valid_cookies_file(path):
-        raw_cookies_file = path
-        break
+    # Add workspace root, backend, and app container paths for both file names
+    possible_paths.extend([
+        BASE_DIR.parent / "cookies.txt",
+        BASE_DIR.parent / "www.youtube.com_cookies.txt",
+        BASE_DIR / "cookies.txt",
+        BASE_DIR / "www.youtube.com_cookies.txt",
+        Path("/app/cookies.txt"),
+        Path("/app/www.youtube.com_cookies.txt")
+    ])
+
+    for path in possible_paths:
+        if path.exists() and is_valid_cookies_file(path):
+            raw_cookies_file = path
+            break
 
 if raw_cookies_file:
     COOKIES_FILE = raw_cookies_file
