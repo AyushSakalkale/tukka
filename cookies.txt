@@ -1,0 +1,2 @@
+# YouTube Cookies File
+# Paste your Netscape format cookies here if you want to download age-restricted or private videos.

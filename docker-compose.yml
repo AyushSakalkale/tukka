@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DOWNLOAD_DIR=/tmp/yt-downloads
+      - MAX_FILE_SIZE_MB=500
+      - RATE_LIMIT_INFO=10/minute
+      - RATE_LIMIT_DOWNLOAD=3/minute
+      - FILE_LIFETIME_SECONDS=3600
+      - CLEANUP_INTERVAL_SECONDS=600
+    volumes:
+      # Optional cookies mount to support downloading age-restricted videos.
+      # If cookies.txt doesn't exist, docker creates a directory, but you can replace it.
+      - ./cookies.txt:/app/cookies.txt:ro
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTDownloader - Easy Ad-free Video & Audio Downloader</title>
+    <meta name="description" content="Download YouTube videos and audio files directly to your phone or computer. Speed, ad-free, 720p maximum quality optimized for mobile devices.">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glows">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <main class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <h1>YTDownloader</h1>
+            </div>
+            <div class="user-badge" title="Developer Mode">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v-2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+        </header>
+
+        <!-- Main Card Container -->
+        <section class="glass-card main-card">
+            <h2>Download YouTube Video</h2>
+            
+            <!-- Input & Parse Section -->
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <input type="text" id="url-input" placeholder="Paste YouTube link here..." aria-label="YouTube video URL">
+                    <button id="paste-btn" class="icon-btn" title="Paste link from clipboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                    </button>
+                </div>
+                <button id="parse-btn" class="primary-btn">
+                    <span class="btn-text">PARSE</span>
+                    <span class="loader-spinner hidden" id="parse-spinner"></span>
+                </button>
+            </div>
+
+            <!-- Error Notice -->
+            <div id="error-box" class="error-notice hidden">
+                <div class="error-icon">⚠️</div>
+                <p id="error-message">Invalid link format. Please try again.</p>
+            </div>
+
+            <!-- Video Metadata Card (Initially Hidden) -->
+            <div id="meta-card" class="metadata-card hidden">
+                <div class="video-preview">
+                    <img id="video-thumbnail" src="" alt="Video thumbnail">
+                    <div id="video-duration" class="video-badge">0:00</div>
+                </div>
+                <div class="video-details">
+                    <h3 id="video-title">Futuristic Cityscapes 4K</h3>
+                    <div class="channel-info">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="channel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M14.12 11.24a2 2 0 1 0-2.24 2.24"/></svg>
+                        <span id="video-channel">Nomadic Tech</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formats List Options (Initially Hidden) -->
+            <div id="formats-section" class="formats-area hidden">
+                <h4 class="section-title">Select Quality Option</h4>
+                <div id="formats-container" class="formats-list">
+                    <!-- Format entries will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Active Download & Progress Tracker (Initially Hidden) -->
+            <div id="download-progress-card" class="progress-card hidden">
+                <div class="progress-info-header">
+                    <span class="progress-title" id="downloading-format-label">Downloading 720p MP4...</span>
+                    <span class="progress-percent" id="download-percentage">0%</span>
+                </div>
+                <div class="progress-bar-track">
+                    <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label">Speed</span>
+                        <span class="meta-value" id="download-speed">0 KB/s</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">ETA</span>
+                        <span class="meta-value" id="download-eta">Waiting...</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Status</span>
+                        <span class="meta-value status-active" id="download-status">Downloading</span>
+                    </div>
+                </div>
+                <div class="progress-warning">
+                    <p>Merging or processing may take a moment after 100% download is reached. Please wait...</p>
+                </div>
+            </div>
+
+            <!-- Success Alert -->
+            <div id="success-box" class="success-notice hidden">
+                <div class="success-icon">✓</div>
+                <p>Download complete! Your file download should start automatically.</p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Made for Dad • Ad-free & simple</p>
+        </footer>
+    </main>
+
+    <!-- App Script -->
+    <script src="app.js"></script>
+</body>
+</html>
