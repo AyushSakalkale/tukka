@@ -120,6 +120,11 @@ def remove_download_file(filepath: str, task_id: str):
         logger.error(f"Error cleaning up download {filepath} after server response: {e}")
 
 # API Routes
+@app.get("/")
+def read_root():
+    """Root endpoint for Render default deployment checks."""
+    return {"status": "healthy", "message": "YouTube Downloader API is running"}
+
 @app.get("/api/health")
 def health_check():
     """Checks the API health and FFmpeg availability."""
