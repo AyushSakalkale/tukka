@@ -74,6 +74,7 @@ def get_youtube_dl_opts(extra_opts: Optional[dict] = None) -> dict:
         'ignoreerrors': False,
         'logtostderr': False,
         'no_color': True,
+        'ignoreconfig': True, # Ignore local/system config files
     }
     if COOKIES_FILE and COOKIES_FILE.exists():
         opts['cookiefile'] = str(COOKIES_FILE)
